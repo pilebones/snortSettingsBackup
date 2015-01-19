@@ -1,0 +1,27 @@
+# Copyright 2001-2015 Sourcefire, Inc. All Rights Reserved.
+#
+# This file contains (i) proprietary rules that were created, tested and certified by
+# Sourcefire, Inc. (the "VRT Certified Rules") that are distributed under the VRT
+# Certified Rules License Agreement (v 2.0), and (ii) rules that were created by
+# Sourcefire and other third parties (the "GPL Rules") that are distributed under the
+# GNU General Public License (GPL), v2.
+# 
+# The VRT Certified Rules are owned by Sourcefire, Inc. The GPL Rules were created
+# by Sourcefire and other third parties. The GPL Rules created by Sourcefire are
+# owned by Sourcefire, Inc., and the GPL Rules not created by Sourcefire are owned by
+# their respective creators. Please see http://www.snort.org/snort/snort-team/ for a
+# list of third party owners and their respective copyrights.
+# 
+# In order to determine what rules are VRT Certified Rules or GPL Rules, please refer
+# to the VRT Certified Rules License Agreement (v2.0).
+#
+#-------------
+# SCADA RULES
+#-------------
+
+alert tcp $EXTERNAL_NET any -> $HOME_NET [1210,1211] (msg:"SCADA CODESYS Gateway-Server directory traversal attempt"; flow:to_server,established; content:"|DD DD|"; depth:2; content:"..|5C|..|5C|WINDOWS|5C|system32|5C|wbem|5C|mof|5C|"; fast_pattern:only; metadata:policy balanced-ips drop, policy connectivity-ips drop, policy security-ips drop; reference:bugtraq,58032; reference:cve,2012-4705; reference:url,ics-cert.us-cert.gov/pdf/ICSA-13-050-01-a.pdf; classtype:attempted-admin; sid:26415; rev:6;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET [1210,1211] (msg:"SCADA CODESYS Gateway-Server executable file upload attempt"; flow:to_server,established; content:"|DD DD|"; depth:2; content:"..|5C|..|5C|"; distance:0; content:"MZ"; distance:0; byte_jump:4,58,relative,little; content:"PE|00 00|"; within:4; distance:-64; metadata:policy balanced-ips drop, policy connectivity-ips drop, policy security-ips drop; reference:bugtraq,58032; reference:cve,2012-4705; reference:url,ics-cert.us-cert.gov/pdf/ICSA-13-050-01-a.pdf; classtype:attempted-admin; sid:26414; rev:6;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET [1210,1211] (msg:"SCADA CODESYS Gateway-Server directory traversal attempt"; flow:to_server,established; content:"|DD DD|"; depth:2; content:".."; within:3; distance:20; content:".."; within:2; distance:1; metadata:policy balanced-ips drop, policy connectivity-ips drop, policy security-ips drop; reference:bugtraq,58032; reference:cve,2012-4705; reference:url,ics-cert.us-cert.gov/pdf/ICSA-13-050-01-a.pdf; classtype:attempted-admin; sid:26488; rev:5;)
+# alert tcp $EXTERNAL_NET any -> $HOME_NET [12397,12399] (msg:"SCADA Schneider Electric IGSS integer underflow attempt"; flow:to_server,established; content:"|9E 19 00 00 49 A1 00 00 EF 03 00 00 70 4E 42 73 48 4A 53 59 62 70 58 61 6D 73 64 78 73 54 70 62|"; metadata:policy security-ips drop; reference:cve,2013-0657; classtype:attempted-user; sid:29504; rev:1;)
+# alert tcp $EXTERNAL_NET any -> $HOME_NET 502 (msg:"SCADA Tri PLC Nano 10 PLC denial of service attempt"; flow:to_server,established; content:"|00 06|"; depth:2; offset:4; modbus_func:1; modbus_data; content:"|00 00|"; depth:2; offset:2; reference:cve,2013-2784; classtype:denial-of-service; sid:29965; rev:1;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET 20171 (msg:"SCADA Yokogawa CENTUM CS 3000 stack buffer overflow attempt"; flow:to_server,established; content:"|64 A1 18 00 00 00 83 C0 08 8B 20 81 C4 30 F8 FF FF|"; fast_pattern:only; metadata:policy balanced-ips drop, policy security-ips drop; reference:cve,2014-0783; reference:url,www.yokogawa.com/dcs/security/ysar/YSAR-14-0001E.pdf; classtype:attempted-admin; sid:30562; rev:1;)

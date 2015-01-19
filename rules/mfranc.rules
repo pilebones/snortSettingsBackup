@@ -1,0 +1,3 @@
+# Pour tester : sudo hping3 -S -F -R -P -A -U <@IP>
+alert tcp any any -> any any (sid: 10; msg: "XMas attack"; flags:FSRAUP; )
+

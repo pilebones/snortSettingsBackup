@@ -1,0 +1,24 @@
+# Copyright 2001-2015 Sourcefire, Inc. All Rights Reserved.
+#
+# This file contains (i) proprietary rules that were created, tested and certified by
+# Sourcefire, Inc. (the "VRT Certified Rules") that are distributed under the VRT
+# Certified Rules License Agreement (v 2.0), and (ii) rules that were created by
+# Sourcefire and other third parties (the "GPL Rules") that are distributed under the
+# GNU General Public License (GPL), v2.
+# 
+# The VRT Certified Rules are owned by Sourcefire, Inc. The GPL Rules were created
+# by Sourcefire and other third parties. The GPL Rules created by Sourcefire are
+# owned by Sourcefire, Inc., and the GPL Rules not created by Sourcefire are owned by
+# their respective creators. Please see http://www.snort.org/snort/snort-team/ for a
+# list of third party owners and their respective copyrights.
+# 
+# In order to determine what rules are VRT Certified Rules or GPL Rules, please refer
+# to the VRT Certified Rules License Agreement (v2.0).
+#
+#-----------
+# DOS RULES
+#-----------
+
+# alert icmp $HOME_NET any -> $HOME_NET any (msg:"DOS Microsoft ICMPv6 mismatched prefix length and length field denial of service attempt"; itype:134; icode:0; content:"|03 04|"; depth:2; offset:12; content:"|18 02|"; within:2; distance:30; byte_test:1,<,0x41,0,relative; reference:cve,2013-3183; reference:url,technet.microsoft.com/en-us/security/bulletin/ms13-065; classtype:denial-of-service; sid:27624; rev:1;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET [1211,1210] (msg:"DOS - CoDeSys Gateway Server Denial of Service attempt detected"; flow:established,to_server; content:"|DD DD|"; depth:2; byte_test:4,>=,4127195136,12,relative,little; metadata:policy balanced-ips drop, policy connectivity-ips drop, policy security-ips drop; reference:bugtraq,58032; reference:cve,2012-4707; classtype:attempted-dos; sid:29604; rev:1;)
+# alert ip $EXTERNAL_NET any -> $HOME_NET any (msg:"DOS Linux kernel SCTP duplicate cookie denial of service attempt"; ip_proto:sctp; content:"|0A 00|"; depth:2; offset:12; fast_pattern; byte_extract:4,0,chunk_length_plus_cookie_crumb,relative; content:"|0A 00|"; distance:0; byte_test:4,=,chunk_length_plus_cookie_crumb,0,relative; reference:bugtraq,60715; reference:cve,2013-2206; classtype:attempted-dos; sid:30326; rev:1;)
